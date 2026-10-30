@@ -1,0 +1,17 @@
+<li class="item {{ item.item_type }}{% if item.is_past %} past{% endif %}">
+  <div class="item-main">
+    <span class="badge badge-{{ item.item_type }}">{{ item.type_label }}</span>
+    <h3 class="item-title">{{ item.title }}</h3>
+    <p class="item-when">{{ item.date_display }}{% if item.time_display %} · {{ item.time_display }}{% endif %}</p>
+    {% if item.description %}<p class="item-desc">{{ item.description }}</p>{% endif %}
+  </div>
+  <div class="item-actions">
+    <a href="{{ url_for('items.edit', item_id=item.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+    <form action="{{ url_for('items.delete', item_id=item.id) }}" method="post" class="inline"
+          data-confirm="Delete &quot;{{ item.title }}&quot;? This cannot be undone."
+          onsubmit="return confirm(this.dataset.confirm);">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+  </div>
+</li>

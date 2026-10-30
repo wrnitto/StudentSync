@@ -1,0 +1,24 @@
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label for="title">Title</label>
+<input id="title" name="title" value="{{ form.title or '' }}" maxlength="200" required>
+
+<label for="description">Description <small>(optional)</small></label>
+<textarea id="description" name="description" rows="3">{{ form.description or '' }}</textarea>
+
+<label for="item_type">Type</label>
+<select id="item_type" name="item_type" required>
+  {% for value, label in item_types.items() %}
+    <option value="{{ value }}" {% if form.item_type == value %}selected{% endif %}>{{ label }}</option>
+  {% endfor %}
+</select>
+
+<div class="row">
+  <div>
+    <label for="due_date">Date</label>
+    <input id="due_date" name="due_date" type="date" value="{{ form.due_date or '' }}" required>
+  </div>
+  <div>
+    <label for="due_time">Time <small>(optional)</small></label>
+    <input id="due_time" name="due_time" type="time" value="{{ form.due_time or '' }}">
+  </div>
+</div>

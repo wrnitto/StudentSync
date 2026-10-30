@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <section class="card form-card">
+    <h2>Add an assignment or event</h2>
+    <form method="post" action="{{ url_for('items.create') }}">
+      {% include "items/_fields.html" %}
+      <button type="submit" class="btn btn-primary btn-block">Add</button>
+    </form>
+  </section>
+
+  <section class="list-section">
+    <div class="list-header">
+      <h2>My schedule</h2>
+      <nav class="filters" aria-label="Filter by type">
+        <a href="{{ url_for('items.dashboard') }}" class="{{ 'active' if type_filter == 'all' }}">All</a>
+        {% for value, label in item_types.items() %}
+          <a href="{{ url_for('items.dashboard', type=value) }}" class="{{ 'active' if type_filter == value }}">{{ label }}s</a>
+        {% endfor %}
+      </nav>
+    </div>
+
+    <h3 class="group-title">Upcoming</h3>
+    {% if upcoming %}
+      <ul class="items">{% for item in upcoming %}{% include "items/_item.html" %}{% endfor %}</ul>
+    {% else %}
+      <p class="empty">Nothing upcoming. Add an assignment or event to get started.</p>
+    {% endif %}
+
+    {% if past %}
+      <h3 class="group-title">Past</h3>
+      <ul class="items">{% for item in past %}{% include "items/_item.html" %}{% endfor %}</ul>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
