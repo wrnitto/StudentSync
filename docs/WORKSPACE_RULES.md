@@ -25,7 +25,7 @@ These rules keep the team's work consistent and reviewable on GitHub. They apply
 |---|---|---|
 | Variables and functions | `camelCase` | `dueAt`, `findConflicts()` |
 | React components and classes | `PascalCase` | `CourseColorPicker` |
-| Constants | `UPPER_SNAKE_CASE` | `MAX_FOLLOWUPS` |
+| Constants | `UPPER_SNAKE_CASE` | `MAX_TITLE_LENGTH` |
 | Booleans | start with `is`/`has`/`should` | `isCompleted`, `hasConflict` |
 | Environment variables | `UPPER_SNAKE_CASE` (client vars prefixed `VITE_`) | `DATABASE_URL`, `VITE_API_URL` |
 
@@ -121,7 +121,7 @@ test(api): cover overlapping event conflict cases
 
 - Give Devin a specific task ID from `docs/TASKS.md` and point it to this file and `docs/PRD.md`.
 - Devin opens pull requests like any team member. **A human teammate must review and approve every Devin PR**, and Devin does not merge its own PRs.
-- Check AI-generated code for scope creep: it must not add features listed as out of scope in `docs/PRD.md`.
+- Check AI-generated code and docs for scope creep. They must not add features listed as out of scope, or behavior that is not in the Analyst requirements (Part A of `docs/PRD.md`).
 - Credit AI assistance in the PR description when required by the course's academic integrity policy.
 
 ## 5. Repository settings (recommended)

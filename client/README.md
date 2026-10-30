@@ -4,12 +4,12 @@ This folder will contain the StudentSync front end: a mobile-first single-page w
 
 **Status (Prototype 1):** placeholder only. No application code yet.
 
-## Planned stack
+## Proposed stack (not final)
 
 - React + Vite (JavaScript)
 - React Router for page routing
-- FullCalendar (React) for weekly and monthly calendar views
-- Plain CSS with CSS variables (mobile-first breakpoints)
+- FullCalendar (or a similar library) for weekly and monthly calendar views
+- Mobile-first, responsive CSS
 - Vitest + React Testing Library for component tests
 
 ## Planned layout (created when development starts)
@@ -20,7 +20,7 @@ client/
   src/
     api/               # functions that call the /api back end
     components/        # reusable UI components
-    pages/             # one component per screen
+    pages/             # one component per screen (screens follow the hand-drawn site map)
     hooks/             # shared React hooks
     styles/            # global CSS and variables
     App.jsx
@@ -29,4 +29,4 @@ client/
   package.json
 ```
 
-See [`docs/PRD.md`](../docs/PRD.md) for the technical architecture and [`docs/TASKS.md`](../docs/TASKS.md) for the work planned for this folder.
+See Part B of [`docs/PRD.md`](../docs/PRD.md) for the proposed architecture and [`docs/TASKS.md`](../docs/TASKS.md) for the work planned for this folder.

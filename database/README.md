@@ -1,6 +1,6 @@
 # /database — Schema, migrations, and seed data
 
-This folder will hold everything needed to create and populate the StudentSync PostgreSQL database.
+This folder will hold everything needed to create and populate the StudentSync database (proposed: PostgreSQL).
 
 **Status (Prototype 1):** placeholder only. No schema or migrations yet.
 
@@ -20,4 +20,4 @@ database/
 - Seed files contain fake data only. Never commit real student information.
 - Local database files and dumps are ignored by `.gitignore`.
 
-The planned data model (users, courses, items, reminders) is described in [`docs/PRD.md`](../docs/PRD.md#data-model-draft).
+The DRAFT data model (users, courses, items, reminders) is in [`docs/PRD.md`](../docs/PRD.md#b4-draft-data-model-proposed).

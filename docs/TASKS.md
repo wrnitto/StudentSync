@@ -1,17 +1,19 @@
 # StudentSync — Development Task List
 
-This file breaks the selected user stories in [`PRD.md`](PRD.md) into development tasks that can be built one at a time in later prototypes. Each phase builds on the one before it, so the app works (in a limited form) at the end of every phase.
+This file breaks the 11 selected user stories in [`PRD.md`](PRD.md) into development tasks that can be built one at a time in later prototypes. Each phase builds on the one before it.
 
 **How to use this list**
 
 - Each task becomes a GitHub issue named `T-x.y <title>` and is labeled with its user story.
 - Work on a task in its own branch (see [`WORKSPACE_RULES.md`](WORKSPACE_RULES.md)).
 - A task is **done** only when *all* of its acceptance criteria are true and its PR has been reviewed and merged.
-- The mapping of phases to prototype numbers is a suggestion and can change with the course schedule.
+- Tasks marked **⚠ Depends on Qn** need an answer to that open question ([PRD A5](PRD.md#a5-open-questions-for-the-analyst)) before they can be finished. Do not invent the missing behavior.
+- Technical details (endpoints, tables, libraries) follow the **proposed** design in PRD Part B and can change.
+- The phase-to-prototype mapping is a suggestion and can change with the course schedule.
 
 **User story key**
 
-| ID | User story |
+| ID | Selected user story |
 |---|---|
 | US-01 | Add, edit, and delete assignments and events |
 | US-02 | Set dates and times for assignments and events |
@@ -34,7 +36,7 @@ This file breaks the selected user stories in [`PRD.md`](PRD.md) into developmen
 - **Description:** Create the `/client`, `/api`, `/database`, and `/docs` folders, a root `README.md`, and a `.gitignore`.
 - **Feature / user story:** SETUP
 - **Acceptance criteria:**
-  - [x] The four folders exist on `main`, each with a README describing its purpose.
+  - [x] The four folders exist, each with a README describing its purpose.
   - [x] `.gitignore` excludes dependencies, environment files, local database files, OS files, and build artifacts.
   - [x] The root `README.md` explains the project, the Prototype 1 purpose, the repository structure, and the development plan.
 
@@ -44,316 +46,289 @@ This file breaks the selected user stories in [`PRD.md`](PRD.md) into developmen
 - **Acceptance criteria:**
   - [x] `docs/PRD.md`, `docs/TASKS.md`, `docs/WORKSPACE_RULES.md`, and `docs/SITEMAP.md` exist.
   - [x] Every selected user story (US-01 to US-11) appears in the PRD and in at least one task.
-  - [x] `docs/SITEMAP.md` is a placeholder only. The site map itself is hand-drawn and submitted separately.
+  - [x] `docs/SITEMAP.md` is a placeholder only. The site map is hand-drawn and submitted separately.
 
 ---
 
 ## Phase 1: Project setup and accounts (suggested: Prototype 2)
 
 ### T-1.1 Initialize the client app
-- **Description:** Create a React + Vite app in `/client` with React Router and a mobile-first base stylesheet.
+- **Description:** Create the front-end app in `/client` (proposed: React + Vite) with routing and a responsive base layout.
 - **Feature / user story:** SETUP
 - **Acceptance criteria:**
-  - [ ] `npm install && npm run dev` inside `/client` starts the app at `http://localhost:5173`.
-  - [ ] A placeholder home route renders and the layout fits a 375 px wide screen without horizontal scrolling.
-  - [ ] `client/.env.example` documents `VITE_API_URL`.
+  - [ ] One documented command installs the dependencies and another starts the client locally.
+  - [ ] A placeholder page renders in both mobile and desktop browsers.
+  - [ ] `client/.env.example` lists the required configuration (for example, the API URL).
 
 ### T-1.2 Initialize the API
-- **Description:** Create an Express app in `/api` with JSON parsing, CORS for the client origin, central error handling, and a health check.
+- **Description:** Create the back-end app in `/api` (proposed: Node.js + Express) with JSON handling, error handling, and a health check.
 - **Feature / user story:** SETUP
 - **Acceptance criteria:**
-  - [ ] `npm install && npm run dev` inside `/api` starts the server at `http://localhost:4000`.
-  - [ ] `GET /api/health` returns `200` with `{ "status": "ok" }`.
-  - [ ] Unknown routes return a JSON `404`, and thrown errors return a JSON `500` without stack traces in production.
-  - [ ] `api/.env.example` documents `PORT`, `DATABASE_URL`, `SESSION_SECRET`, and `CLIENT_ORIGIN`.
+  - [ ] One documented command installs the dependencies and another starts the API locally.
+  - [ ] `GET /api/health` returns a success response.
+  - [ ] Unknown routes and server errors return JSON error responses.
+  - [ ] `api/.env.example` lists the required configuration (for example, database URL and session secret).
 
 ### T-1.3 Set up the database and migrations
-- **Description:** Configure PostgreSQL, the migration runner, and the first migration that creates the `users` table.
+- **Description:** Configure the database (proposed: PostgreSQL), a migration runner, and the first migration that creates the `users` table.
 - **Feature / user story:** SETUP, US-03
 - **Acceptance criteria:**
-  - [ ] One documented command (for example, `npm run migrate`) applies all migrations in `database/migrations/` to an empty database.
-  - [ ] The `users` table has `id`, `name`, `email` (unique, case-insensitive), `password_hash`, and `created_at`.
+  - [ ] One documented command applies all migrations in `database/migrations/` to an empty database.
+  - [ ] The `users` table stores a unique email and a password hash.
   - [ ] `database/README.md` explains how to create the local database and run the migrations and seeds.
 
 ### T-1.4 Add code quality and test tooling
-- **Description:** Add ESLint, Prettier, and test runners (Vitest for the client, Jest + Supertest for the API), plus a GitHub Actions workflow.
+- **Description:** Add linting, formatting, and test runners for the client and API, and a GitHub Actions workflow that runs them.
 - **Feature / user story:** SETUP
 - **Acceptance criteria:**
-  - [ ] `npm run lint` and `npm test` work in both `/client` and `/api`.
+  - [ ] Lint and test commands work in both `/client` and `/api`.
   - [ ] A GitHub Actions workflow runs lint and tests on every pull request.
   - [ ] At least one sample test passes in each app.
 
-### T-1.5 Registration API
-- **Description:** `POST /api/auth/register` creates a user with a bcrypt-hashed password and starts a session.
+### T-1.5 Account creation (API)
+- **Description:** An endpoint that creates an account with an email and password.
 - **Feature / user story:** US-03
 - **Acceptance criteria:**
-  - [ ] A valid name, email, and password (at least 8 characters) creates a user and returns `201` with the user (never the password hash).
-  - [ ] A duplicate email (any letter case) returns `409`. Invalid input returns `400` with field messages.
-  - [ ] The stored `password_hash` is a bcrypt hash, not the plain password.
-  - [ ] Automated tests cover success, duplicate email, and validation errors.
+  - [ ] A valid email and password create an account. The response never includes the password or its hash.
+  - [ ] An email that is already registered is rejected with an error.
+  - [ ] Invalid input (for example, a malformed email or a missing password) is rejected with an error.
+  - [ ] The password is stored only as a hash.
+  - [ ] Automated tests cover success, duplicate email, and invalid input.
 
-### T-1.6 Login, logout, and session API
-- **Description:** Add session-based login (`POST /api/auth/login`), logout (`POST /api/auth/logout`), and current user (`GET /api/auth/me`) endpoints.
+### T-1.6 Login and logout (API)
+- **Description:** Endpoints to log in with email and password, log out, and get the current user.
 - **Feature / user story:** US-03
 - **Acceptance criteria:**
-  - [ ] Correct credentials return `200` and set an HTTP-only session cookie. Wrong credentials return `401` with a generic message that does not reveal which field was wrong.
-  - [ ] `GET /api/auth/me` returns the logged-in user, or `401` when logged out.
-  - [ ] Logout destroys the session, so `/api/auth/me` returns `401` afterward.
-  - [ ] Sessions survive an API restart (stored in PostgreSQL).
+  - [ ] Correct credentials start a session. Incorrect credentials are rejected.
+  - [ ] The current-user endpoint returns the logged-in user, or an unauthorized error when no one is logged in.
+  - [ ] Logging out ends the session.
 
 ### T-1.7 Auth guard and data ownership
-- **Description:** Add `requireAuth` middleware and a shared pattern that filters every query by the logged-in user's ID.
+- **Description:** Middleware that requires login, and a query pattern that limits data to the logged-in user.
 - **Feature / user story:** US-03
 - **Acceptance criteria:**
-  - [ ] Every non-auth endpoint returns `401` when there is no session.
-  - [ ] Requests for another user's resource return `404`, and the resource is not changed.
-  - [ ] A test with two users proves that neither can read, edit, or delete the other's data.
+  - [ ] Endpoints other than registration and login reject requests that have no session.
+  - [ ] A user cannot read, edit, or delete another user's data. A test with two users proves this.
 
-### T-1.8 Registration, login, and logout screens
-- **Description:** Build the register and login screens, protected routes, and a logout control in the client.
+### T-1.8 Account creation, login, and logout screens
+- **Description:** Front-end screens and flow for creating an account, logging in, and logging out.
 - **Feature / user story:** US-03
 - **Acceptance criteria:**
-  - [ ] A user can register, is logged in automatically, and lands on the main screen.
-  - [ ] A user can log out and log back in. Refreshing the page keeps them logged in.
-  - [ ] Visiting a protected screen while logged out redirects to login.
-  - [ ] Validation and server errors are shown next to the form fields. The forms are usable on a phone.
+  - [ ] A user can create an account with email and password.
+  - [ ] A user can log in with email and password and log out.
+  - [ ] Screens that require an account are not reachable while logged out.
+  - [ ] Errors from the API are shown to the user.
 
 ---
 
-## Phase 2: Assignments, tasks, and events with dates and times (suggested: Prototype 2–3)
+## Phase 2: Assignments and events with dates and times (suggested: Prototype 2–3)
 
 ### T-2.1 Items table migration
-- **Description:** Add the `items` table (type, title, description, due/start/end times, all-day, timestamps).
+- **Description:** Add the table that stores assignments and events, including their date/time fields.
 - **Feature / user story:** US-01, US-02
 - **Acceptance criteria:**
-  - [ ] The migration creates `items` with the columns listed in the PRD data model, a `user_id` foreign key (cascade on user delete), and a `CHECK` on `type`.
-  - [ ] All date-time columns are `TIMESTAMPTZ`.
-  - [ ] An index on `(user_id, due_at)` and `(user_id, start_at)` exists.
+  - [ ] The migration creates the items table with an owner (`user_id`), title, description, item type, and date/time columns.
+  - [ ] Date/time columns store time zone information.
 
 ### T-2.2 Item CRUD API
-- **Description:** Add `GET/POST /api/items` and `GET/PATCH/DELETE /api/items/:id`, scoped to the logged-in user.
+- **Description:** Endpoints to add, list, view, edit, and delete the logged-in user's assignments and events.
 - **Feature / user story:** US-01
 - **Acceptance criteria:**
-  - [ ] A user can create, list, read, update, and delete their own items.
-  - [ ] `title` (1–200 characters) and `type` are required. `description` is optional.
-  - [ ] Changes are saved in the database and still exist after an API restart.
-  - [ ] Ownership rules from T-1.7 are enforced and covered by tests.
+  - [ ] A user can add, edit, and delete their own assignments and events through the API.
+  - [ ] Changes are saved in the database and remain after the API restarts.
+  - [ ] The ownership rules from T-1.7 apply and are covered by tests.
 
-### T-2.3 Date and time rules
-- **Description:** Validate and store dates and times for each item type.
+### T-2.3 Dates and times on items (API)
+- **Description:** Accept, validate, and store dates and times for assignments and events.
 - **Feature / user story:** US-02
 - **Acceptance criteria:**
-  - [ ] Assignments and tasks require `due_at`. The due time is optional; if it is missing, the item is due at the end of that day.
-  - [ ] Events require `start_at` and `end_at` with `end_at > start_at`, unless `all_day` is true.
-  - [ ] Times are stored in UTC and returned in ISO 8601 format. The client displays them in the user's local time zone.
-  - [ ] Invalid dates or times return `400` with a clear message.
+  - [ ] A date and time can be set when an assignment or event is created, and changed when it is edited.
+  - [ ] Invalid dates or times are rejected with an error.
+  - [ ] Saved dates and times are returned in a consistent, documented format.
 
-### T-2.4 Item form (create and edit)
-- **Description:** Build one mobile-friendly form for adding and editing items, with fields that change based on the item type.
+### T-2.4 Item form (add and edit)
+- **Description:** A front-end form for adding and editing assignments and events, including their date and time.
 - **Feature / user story:** US-01, US-02
 - **Acceptance criteria:**
-  - [ ] The form has title, description, type, and date/time inputs (due date/time for assignments and tasks; start/end or all-day for events).
-  - [ ] Saving creates or updates the item and returns to the previous screen with a success message.
-  - [ ] Editing pre-fills the current values.
-  - [ ] Required-field and date errors are shown before submitting and also when the API rejects the request.
+  - [ ] A user can add an assignment or event with a date and time.
+  - [ ] A user can edit an existing assignment or event, and the form shows its current values.
+  - [ ] Validation errors are shown to the user.
 
-### T-2.5 Item list with edit and delete
-- **Description:** Show the user's items in a simple list with Edit and Delete actions.
+### T-2.5 View and delete items
+- **Description:** A front-end view of the user's assignments and events, with edit and delete actions.
 - **Feature / user story:** US-01, US-02
 - **Acceptance criteria:**
-  - [ ] Items are listed in chronological order and show their type, title, and date/time.
-  - [ ] Each item has Edit (opens the form) and Delete actions. Delete asks for confirmation before removing the item.
-  - [ ] Users only ever see their own items.
+  - [ ] The user's assignments and events are displayed with their dates and times.
+  - [ ] Each item can be opened for editing or deleted.
+  - [ ] A user sees only their own items.
 
 ---
 
-## Phase 3: Courses, importance, and progress (suggested: Prototype 3)
+## Phase 3: Courses, importance, and completion (suggested: Prototype 3)
 
-### T-3.1 Courses data and API
-- **Description:** Add a `courses` migration (`name`, `color`), add `course_id` to `items`, and add course CRUD endpoints.
+### T-3.1 Courses and colors (API)
+- **Description:** Store courses with a color and let items be linked to a course.
 - **Feature / user story:** US-04
 - **Acceptance criteria:**
-  - [ ] A user can create, list, edit, and delete their own courses through `/api/courses`.
-  - [ ] `color` must be one of the preset palette values. Invalid colors return `400`.
-  - [ ] Deleting a course sets `course_id` to `NULL` on its items instead of deleting them.
+  - [ ] A user can create courses and assign or change each course's color.
+  - [ ] An assignment or event can be linked to one of the user's courses.
+  - [ ] Users can access only their own courses.
+- **⚠ Depends on Q3:** deleting courses, and what happens to their items, is not defined yet.
 
-### T-3.2 Course management screen and color picker
-- **Description:** Build UI to manage courses and pick a color from the palette.
+### T-3.2 Courses and colors (UI)
+- **Description:** Front-end controls to create courses, choose their colors, and link items to a course.
 - **Feature / user story:** US-04
 - **Acceptance criteria:**
-  - [ ] A user can add, rename, recolor, and delete courses from the UI.
-  - [ ] The color picker shows the palette as swatches with accessible labels (for example, "Blue").
-  - [ ] The item form has a course dropdown that includes "No course".
+  - [ ] A user can create a course and assign it a color from the UI.
+  - [ ] A user can change a course's color.
+  - [ ] The item form lets the user link an item to a course.
 
-### T-3.3 Show course colors on items
-- **Description:** Use course colors wherever items appear.
+### T-3.3 Show course colors on related events
+- **Description:** Display a course's color on its related events and items.
 - **Feature / user story:** US-04
 - **Acceptance criteria:**
-  - [ ] Items linked to a course show that course's color (for example, as a colored bar or dot) and the course name.
-  - [ ] Changing a course's color updates all of its items without editing each item.
-  - [ ] Text on colored backgrounds meets WCAG AA contrast.
+  - [ ] Items linked to a course are shown in that course's color.
+  - [ ] Changing a course's color updates how its related items are displayed.
 
 ### T-3.4 Importance rating
-- **Description:** Add `importance` (`low` | `medium` | `high`, default `medium`) to items in the API and the form.
+- **Description:** Store an importance rating on tasks and let users set and change it.
 - **Feature / user story:** US-05
 - **Acceptance criteria:**
-  - [ ] Assignments and tasks can be created or edited with an importance rating. Omitting it saves `medium`.
-  - [ ] Invalid values return `400`.
-  - [ ] Importance is shown on each item with both text and an icon or color, not color alone.
+  - [ ] A user can give a task an importance rating and change it later.
+  - [ ] The importance rating is saved and shown with the task.
+- **⚠ Depends on Q1 and Q2:** which items are "tasks," and the rating scale. (A proposed implementation detail, *not* a requirement, is a three-level scale such as low / medium / high.)
 
-### T-3.5 To-Do view ordered by importance
-- **Description:** Add a screen that lists unfinished assignments and tasks, sorted by importance and then by due date.
+### T-3.5 Unfinished tasks ordered by importance
+- **Description:** A view that lists the user's unfinished tasks ordered by importance.
 - **Feature / user story:** US-08
 - **Acceptance criteria:**
-  - [ ] Only incomplete assignments and tasks are shown. Events and completed items are excluded.
-  - [ ] Items are ordered high → medium → low, then by soonest due date within each level.
-  - [ ] Overdue items are clearly flagged.
-  - [ ] An empty state appears when there is nothing left to do.
+  - [ ] Only unfinished tasks are listed.
+  - [ ] Tasks are ordered by importance rating.
+- **⚠ Depends on Q1 and Q2.** Proposed UI ideas, *not* requirements: a secondary sort by date and an indicator for past-due tasks.
 
-### T-3.6 Mark complete and incomplete
-- **Description:** Add `is_completed` and `completed_at`, the `complete` and `reopen` endpoints, and a checkbox or button in the UI.
+### T-3.6 Mark tasks complete
+- **Description:** Let users mark a task complete (API and UI).
 - **Feature / user story:** US-09
 - **Acceptance criteria:**
-  - [ ] Marking an item complete records `completed_at` and removes it from the To-Do view right away.
-  - [ ] An item can be marked incomplete again, which clears `completed_at` and returns it to the To-Do view.
-  - [ ] The change is saved and survives a page refresh.
+  - [ ] A user can mark a task complete, and the change is saved.
+  - [ ] Completed tasks no longer appear in the unfinished-tasks view (T-3.5).
 
-### T-3.7 Completed work view
-- **Description:** Add a screen to review completed items.
+### T-3.7 Review completed work
+- **Description:** A view where users can review the tasks they have completed.
 - **Feature / user story:** US-09
 - **Acceptance criteria:**
-  - [ ] Completed items are listed newest first, with their completion date.
-  - [ ] The list can be filtered by course.
-  - [ ] Each item can be reopened from this view.
+  - [ ] A user can see their completed tasks.
+  - [ ] Users see only their own completed work.
+- **⚠ Depends on Q7:** what "review" includes beyond listing completed tasks.
 
 ---
 
 ## Phase 4: Calendar views and conflict detection (suggested: Prototype 4)
 
 ### T-4.1 Monthly calendar view
-- **Description:** Show items on a monthly calendar using FullCalendar.
+- **Description:** Show the user's assignments and events on a monthly calendar.
 - **Feature / user story:** US-07
 - **Acceptance criteria:**
-  - [ ] The current month shows all of the user's items on their dates, in course colors.
-  - [ ] Previous, Next, and Today controls change the month, and only that date range is loaded from the API (`from`/`to`).
-  - [ ] Tapping an item opens its details or edit form.
-  - [ ] The view is readable on a 375 px screen (for example, with "+N more" for busy days).
+  - [ ] Assignments and events appear on their dates in a monthly view.
+  - [ ] The user can move between months.
+  - [ ] Course colors (US-04) are used for related events.
 
-### T-4.2 Weekly view and view toggle
-- **Description:** Add a weekly time-grid view and a toggle between the weekly and monthly views.
+### T-4.2 Weekly view and view switching
+- **Description:** Add a weekly calendar view and a control to switch between weekly and monthly views.
 - **Feature / user story:** US-07
 - **Acceptance criteria:**
-  - [ ] A Week/Month toggle switches views without reloading the page.
-  - [ ] The weekly view places timed events in their time slots and shows all-day items and due dates in an all-day row.
-  - [ ] The selected view is remembered when the user returns to the calendar.
+  - [ ] Assignments and events appear at their dates and times in a weekly view.
+  - [ ] The user can switch between the weekly and monthly views.
+  - [ ] The user can move between weeks.
 
-### T-4.3 Conflict detection service and API
-- **Description:** Detect overlapping timed events on the server before saving.
+### T-4.3 Conflict check (API)
+- **Description:** Check a timed event for scheduling conflicts with the user's other timed events before it is saved.
 - **Feature / user story:** US-06
 - **Acceptance criteria:**
-  - [ ] Creating or updating a timed event that overlaps another of the user's timed events returns `409` with the list of conflicting events, unless the request includes `force: true`.
-  - [ ] Back-to-back events (one ends exactly when the next starts) are **not** conflicts. All-day events, assignments, tasks, and other users' events are ignored.
-  - [ ] When editing an event, it is not compared with itself.
-  - [ ] `POST /api/items/check-conflicts` returns conflicts for a proposed time range without saving.
-  - [ ] Unit tests cover overlap, no overlap, touching edges, and edits.
+  - [ ] Before a timed event is saved (created or edited), the API detects whether it overlaps any of the user's other timed events and returns the conflicting events.
+  - [ ] Only the same user's events are checked, and an edited event is not compared with itself.
+  - [ ] The API never moves or changes events to resolve a conflict.
+  - [ ] Unit tests cover overlapping, non-overlapping, and edited events.
 
-### T-4.4 Conflict warning in the UI
-- **Description:** Show a warning dialog when saving an event causes a conflict.
+### T-4.4 Conflict check (UI)
+- **Description:** Run the conflict check before saving a timed event and tell the user about any conflicts.
 - **Feature / user story:** US-06
 - **Acceptance criteria:**
-  - [ ] Saving a conflicting event opens a dialog that lists each conflicting event's title and time.
-  - [ ] **Save anyway** saves the event with `force: true`. **Go back** returns to the form with no changes saved.
-  - [ ] The app never moves or changes any event automatically.
+  - [ ] When a user saves a timed event, the conflict check runs before the event is saved.
+  - [ ] Detected conflicts are shown to the user, including which events conflict.
+  - [ ] No event is changed automatically.
+- **⚠ Depends on Q4:** the options the user has after a conflict is detected.
 
 ---
 
 ## Phase 5: Reminders (suggested: Prototype 5)
 
-### T-5.1 Reminder data model and user settings
-- **Description:** Add the `reminders` and `notifications` tables and the reminder settings columns on `users`.
+### T-5.1 Reminder data model
+- **Description:** Add storage for deadline and follow-up reminders.
 - **Feature / user story:** US-10, US-11
 - **Acceptance criteria:**
-  - [ ] The migrations create `reminders` (`kind`, `remind_at`, `sent_at`) and `notifications` as described in the PRD.
-  - [ ] `users` has `default_reminder_minutes`, `followup_interval_hours` (default 24), `followup_max_count` (default 3), and `time_zone`.
-  - [ ] Deleting an item deletes its reminders.
+  - [ ] A migration creates a reminders table linked to items, with the reminder type and time.
+  - [ ] Users can access only reminders on their own items.
 
-### T-5.2 Reminder API (set and change)
-- **Description:** Add endpoints to add, list, change, and remove deadline reminders on an item, and a settings endpoint.
+### T-5.2 Set and change deadline reminders
+- **Description:** Let users set and change deadline reminders on their items (API and UI).
 - **Feature / user story:** US-10
 - **Acceptance criteria:**
-  - [ ] A user can add one or more reminders to their own item, either as an offset before the due/start time or as an exact date/time.
-  - [ ] A user can change or delete a reminder that has not been sent.
-  - [ ] When an item's due/start time changes, its offset-based reminders are recalculated.
-  - [ ] `GET/PATCH /api/settings` reads and updates the default reminder offset and follow-up settings.
-  - [ ] New items automatically get the user's default reminder (if one is set).
+  - [ ] A user can set a deadline reminder on an assignment or event.
+  - [ ] A user can change or remove a reminder they set.
+  - [ ] Reminders are saved and shown with the item.
+- **⚠ Depends on Q6:** whether there are default reminder times.
 
-### T-5.3 Reminder controls in the UI
-- **Description:** Add reminder controls to the item form and a reminder settings screen.
+### T-5.3 Reminder scheduler
+- **Description:** A scheduled background job in the API that finds reminders that are due.
+- **Feature / user story:** US-10, US-11
+- **Acceptance criteria:**
+  - [ ] The job finds reminders whose time has arrived and that have not been delivered.
+  - [ ] Each reminder is delivered at most once.
+  - [ ] Reminders on completed or deleted items are not delivered.
+
+### T-5.4 Receive due-date reminders
+- **Description:** Deliver due-date reminders to the user.
 - **Feature / user story:** US-10
 - **Acceptance criteria:**
-  - [ ] The item form lets the user add, change, and remove reminders with presets (10 min, 1 hour, 1 day, 1 week before) or a custom date/time.
-  - [ ] The settings screen lets the user choose a default reminder.
-  - [ ] Saved reminders appear on the item's details.
+  - [ ] When a deadline reminder is due, the user receives it.
+  - [ ] The reminder identifies the assignment or event and when it is due.
+- **⚠ Depends on Q5:** the delivery channel. A proposed implementation detail, *not* a requirement, is in-app notifications.
 
-### T-5.4 Reminder scheduler and in-app notifications
-- **Description:** Add a `node-cron` job that delivers due reminders as in-app notifications.
-- **Feature / user story:** US-10
-- **Acceptance criteria:**
-  - [ ] Every minute, the job finds unsent reminders with `remind_at <= now` for incomplete items, creates a notification, and sets `sent_at`.
-  - [ ] Each reminder is delivered only once, even if the job runs again or overlaps with a previous run.
-  - [ ] The client shows an unread-count badge and a notification list. Opening a notification goes to its item and marks it read.
-  - [ ] Reminders for completed or deleted items are not delivered.
-
-### T-5.5 Email reminders
-- **Description:** Send reminder emails through Nodemailer when a reminder is delivered.
-- **Feature / user story:** US-10
-- **Acceptance criteria:**
-  - [ ] Each delivered reminder also sends an email to the user that includes the item title, due/start time (in the user's time zone), and a link to the app.
-  - [ ] SMTP settings come from environment variables. In development, emails go to a test inbox (for example, Ethereal or Mailpit).
-  - [ ] An email failure is logged and does not stop the in-app notification or other reminders.
-
-### T-5.6 Follow-up reminders for incomplete tasks
-- **Description:** Automatically remind users about overdue, incomplete assignments and tasks.
+### T-5.5 Follow-up reminders for incomplete tasks
+- **Description:** Send follow-up reminders for tasks that are still incomplete.
 - **Feature / user story:** US-11
 - **Acceptance criteria:**
-  - [ ] When an assignment or task passes its due time without being completed, a `follow_up` reminder is delivered (in-app and email).
-  - [ ] Follow-ups repeat every `followup_interval_hours` until the item is completed, `followup_max_count` is reached, or follow-ups are turned off.
-  - [ ] Completing or deleting the item stops all further follow-ups.
-  - [ ] Tests use a controllable clock to cover first follow-up, repeat, max count, and stop on completion.
-
-### T-5.7 Follow-up settings in the UI
-- **Description:** Let users configure or turn off follow-up reminders.
-- **Feature / user story:** US-11
-- **Acceptance criteria:**
-  - [ ] The settings screen has an on/off switch, an interval, and a maximum count for follow-ups.
-  - [ ] Changes are saved and apply to the next scheduled follow-up.
+  - [ ] The user receives a follow-up reminder for a task that is still incomplete.
+  - [ ] Once a task is marked complete, its follow-up reminders stop.
+  - [ ] Tests use a controllable clock to verify when follow-ups are generated.
+- **⚠ Depends on Q1, Q5, and Q6:** which items get follow-ups, the delivery channel, and timing and frequency.
 
 ---
 
 ## Phase 6: Polish and release (suggested: final prototype)
 
-### T-6.1 Mobile and accessibility pass
-- **Description:** Review every screen at phone, tablet, and desktop widths and against basic accessibility checks.
-- **Feature / user story:** All (NFR-1, NFR-5)
+### T-6.1 Responsive review
+- **Description:** Review every screen in mobile and desktop browsers.
+- **Feature / user story:** All
 - **Acceptance criteria:**
-  - [ ] No screen scrolls horizontally at 360 px. Touch targets are at least 44×44 px.
-  - [ ] All form fields have labels. Every screen can be used with the keyboard only.
-  - [ ] Lighthouse accessibility score of 90 or higher on the main screens.
+  - [ ] Every screen is usable in current mobile and desktop browsers.
+  - [ ] Form fields have labels, and the main flows can be completed with a keyboard.
 
 ### T-6.2 Seed data and demo script
 - **Description:** Add demo seed data and a short demo walkthrough.
 - **Feature / user story:** SETUP
 - **Acceptance criteria:**
-  - [ ] One command loads a demo user with courses, items of each type, completed items, one conflict, and reminders.
-  - [ ] `docs/` contains a step-by-step demo script that covers every user story.
+  - [ ] One command loads fake demo data that exercises each user story.
+  - [ ] `docs/` contains a step-by-step demo script that covers every selected user story.
 
 ### T-6.3 Deployment
-- **Description:** Deploy the client, API, and database to free-tier hosting.
+- **Description:** Deploy the client, API, and database to a hosting provider.
 - **Feature / user story:** SETUP
 - **Acceptance criteria:**
-  - [ ] The app is reachable over HTTPS at a public URL, with secrets set as environment variables on the host.
-  - [ ] Migrations run against the production database. The reminder job runs in production.
-  - [ ] The README has the live URL and deployment notes.
+  - [ ] The app is reachable over HTTPS at a public URL, with secrets set as environment variables.
+  - [ ] Migrations and the reminder job run in the deployed environment.
+  - [ ] The README documents the URL and the deployment steps.
 
 ---
 
@@ -363,12 +338,12 @@ This file breaks the selected user stories in [`PRD.md`](PRD.md) into developmen
 |---|---|
 | US-01 Add, edit, and delete assignments and events | T-2.1, T-2.2, T-2.4, T-2.5 |
 | US-02 Set dates and times | T-2.1, T-2.3, T-2.4, T-2.5 |
-| US-03 Account and email/password login | T-1.3, T-1.5, T-1.6, T-1.7, T-1.8 |
-| US-04 Course colors | T-3.1, T-3.2, T-3.3 |
-| US-05 Importance rating | T-3.4 |
-| US-06 Conflict detection before saving | T-4.3, T-4.4 |
-| US-07 Weekly and monthly calendar views | T-4.1, T-4.2 |
-| US-08 Unfinished tasks ordered by importance | T-3.5 |
-| US-09 Mark complete and review completed work | T-3.6, T-3.7 |
-| US-10 Deadline reminders | T-5.1, T-5.2, T-5.3, T-5.4, T-5.5 |
-| US-11 Follow-up reminders | T-5.1, T-5.6, T-5.7 |
+| US-03 Create an account and log in with email and password | T-1.3, T-1.5, T-1.6, T-1.7, T-1.8 |
+| US-04 Assign colors to courses and related events | T-3.1, T-3.2, T-3.3, T-4.1 |
+| US-05 Give tasks an importance rating | T-3.4 |
+| US-06 Detect scheduling conflicts before saving timed events | T-4.3, T-4.4 |
+| US-07 Switch between weekly and monthly calendar views | T-4.1, T-4.2 |
+| US-08 View unfinished tasks ordered by importance | T-3.5 |
+| US-09 Mark tasks complete and review completed work | T-3.6, T-3.7 |
+| US-10 Set/change deadline reminders and receive due-date reminders | T-5.1, T-5.2, T-5.3, T-5.4 |
+| US-11 Receive follow-up reminders for incomplete tasks | T-5.1, T-5.3, T-5.5 |

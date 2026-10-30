@@ -1,6 +1,6 @@
 # StudentSync
 
-StudentSync is a **mobile-first web application that helps college students organize schoolwork and personal responsibilities in one place.** Students will be able to track assignments, tasks, and events with dates and times; color-code courses; rate importance; see a weekly or monthly calendar; get warnings about scheduling conflicts before saving; mark work complete; and receive deadline and follow-up reminders.
+StudentSync is a **mobile-first web application that helps college students organize schoolwork and personal responsibilities in one place.** The selected user stories cover managing assignments and events with dates and times, email/password accounts, course colors, importance ratings, conflict detection before saving timed events, weekly and monthly calendar views, completing tasks, and deadline and follow-up reminders (see [`docs/PRD.md`](docs/PRD.md)).
 
 ## Current stage: Prototype 1 (scaffolding)
 
@@ -18,9 +18,9 @@ There is no runnable application code yet.
 
 ```
 StudentSync/
-├── client/          # Front-end application (React + Vite, mobile-first). Placeholder in Prototype 1
-├── api/             # Back-end REST API (Node.js + Express). Placeholder in Prototype 1
-├── database/        # PostgreSQL schema, migrations, and seed data
+├── client/          # Front-end application (proposed: React + Vite). Placeholder in Prototype 1
+├── api/             # Back-end REST API (proposed: Node.js + Express). Placeholder in Prototype 1
+├── database/        # Database schema, migrations, and seed data (proposed: PostgreSQL)
 │   ├── migrations/  # Numbered SQL migrations (added in later prototypes)
 │   └── seeds/       # Demo/sample data (added in later prototypes)
 ├── docs/            # Project documentation
@@ -34,16 +34,18 @@ StudentSync/
 
 Each folder has its own `README.md` describing what will go there.
 
-## Planned technology
+## Proposed technology
 
-| Layer | Technology |
+These are proposed technical choices for future prototypes, not product requirements.
+
+| Layer | Proposed technology |
 |---|---|
 | Front end (`/client`) | React, Vite, React Router, FullCalendar, CSS (mobile-first) |
-| Back end (`/api`) | Node.js, Express, bcrypt, express-session, node-cron, Nodemailer |
+| Back end (`/api`) | Node.js, Express, bcrypt, express-session, node-cron |
 | Database (`/database`) | PostgreSQL with SQL migrations |
 | Testing and quality | Vitest, Jest + Supertest, ESLint, Prettier, GitHub Actions |
 
-See [`docs/PRD.md`](docs/PRD.md#4-technical-architecture) for the full architecture, data model, and planned API endpoints.
+See [Part B of `docs/PRD.md`](docs/PRD.md#part-b-proposed-technical-decisions-for-future-prototypes) for the proposed architecture and the DRAFT API endpoints and data model.
 
 ## How future development will be organized
 
@@ -57,7 +59,7 @@ Development will happen in **phases**, each delivered in a later prototype. Each
 | 3 | Course colors, importance ratings, To-Do list, completing work | US-04, US-05, US-08, US-09 |
 | 4 | Weekly and monthly calendar views and conflict detection | US-06, US-07 |
 | 5 | Deadline and follow-up reminders | US-10, US-11 |
-| 6 | Mobile and accessibility polish, demo data, deployment | — |
+| 6 | Responsive polish, demo data, deployment | — |
 
 Workflow summary (details in [`docs/WORKSPACE_RULES.md`](docs/WORKSPACE_RULES.md)):
 
@@ -69,4 +71,4 @@ Workflow summary (details in [`docs/WORKSPACE_RULES.md`](docs/WORKSPACE_RULES.md
 
 ## Out of scope
 
-Canvas/LMS importing, assignment submission, grade calculation, instructor or employer accounts, shared calendars, messaging, payments, external appointment booking, automatic study scheduling, and automatic conflict resolution are **not** part of StudentSync. See [`docs/PRD.md`](docs/PRD.md#34-out-of-scope).
+Canvas/LMS importing, assignment submission, grade calculation, instructor or employer accounts, shared calendars, messaging, payments, external appointment booking, automatic study scheduling, and automatic conflict resolution are **not** part of StudentSync. See [`docs/PRD.md`](docs/PRD.md#a4-out-of-scope).
