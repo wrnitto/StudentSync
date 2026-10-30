@@ -1,64 +1,72 @@
 # StudentSync
 
-StudentSync is a mobile-friendly web application that helps college students organize schoolwork and personal responsibilities in one place.
+StudentSync is a **mobile-first web application that helps college students organize schoolwork and personal responsibilities in one place.** Students will be able to track assignments, tasks, and events with dates and times; color-code courses; rate importance; see a weekly or monthly calendar; get warnings about scheduling conflicts before saving; mark work complete; and receive deadline and follow-up reminders.
 
-## Prototype 1 scope
+## Current stage: Prototype 1 (scaffolding)
 
-- Create an account and log in with email + password (passwords are hashed)
-- Log out
-- Dashboard listing your assignments and events (upcoming and past), with an All / Assignments / Events filter
-- Add, edit, and delete assignments and events (title, description, type, date, optional time)
-- Data is saved in a SQLite database; each user only sees and can change their own items
-- Responsive layout for desktop and mobile browsers
+Prototype 1 is a **scaffolding** milestone. It is **not** the working application and **not** the final UI design. Its purpose is to set up the foundation for later development:
 
-Not in this prototype: LMS importing, grades, instructor/employer accounts, shared calendars, messaging, payments, automatic scheduling, or conflict resolution.
+- the **project structure** (`/client`, `/api`, `/database`, `/docs`),
+- the **technical plan** and requirements ([`docs/PRD.md`](docs/PRD.md)),
+- the **development tasks** with acceptance criteria ([`docs/TASKS.md`](docs/TASKS.md)),
+- the **workspace rules** for naming, commits, branching, and reviews ([`docs/WORKSPACE_RULES.md`](docs/WORKSPACE_RULES.md)), and
+- a placeholder for the **site map** ([`docs/SITEMAP.md`](docs/SITEMAP.md)). The site map itself is hand-drawn and submitted separately.
 
-## Tech stack
+There is no runnable application code yet.
 
-- Python 3.10+ with [Flask](https://flask.palletsprojects.com/)
-- SQLite (Python's built-in `sqlite3`)
-- Server-rendered Jinja templates and plain CSS (no build step)
-
-## Project structure
+## Repository structure
 
 ```
-app.py                      # entry point (python app.py)
-requirements.txt
-studentsync/
-  __init__.py               # app factory, registers blueprints
-  db.py                     # SQLite connection + schema setup
-  schema.sql                # users and items tables
-  auth.py                   # register, login, logout, login_required
-  items.py                  # dashboard and assignment/event CRUD
-  csrf.py                   # simple CSRF protection for forms
-  templates/                # Jinja templates (base, auth/, items/)
-  static/style.css          # responsive styles
-tests/                      # pytest tests
+StudentSync/
+├── client/          # Front-end application (React + Vite, mobile-first). Placeholder in Prototype 1
+├── api/             # Back-end REST API (Node.js + Express). Placeholder in Prototype 1
+├── database/        # PostgreSQL schema, migrations, and seed data
+│   ├── migrations/  # Numbered SQL migrations (added in later prototypes)
+│   └── seeds/       # Demo/sample data (added in later prototypes)
+├── docs/            # Project documentation
+│   ├── PRD.md               # Product Requirements Document
+│   ├── TASKS.md             # Development task list with acceptance criteria
+│   ├── WORKSPACE_RULES.md   # Naming, commits, branching, and PR/review process
+│   └── SITEMAP.md           # Placeholder: the site map is hand-drawn and submitted separately
+├── .gitignore
+└── README.md
 ```
 
-New features can be added as new blueprints (e.g. `studentsync/calendar.py`) and new tables in `schema.sql`.
+Each folder has its own `README.md` describing what will go there.
 
-## Running locally
+## Planned technology
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python app.py
-```
+| Layer | Technology |
+|---|---|
+| Front end (`/client`) | React, Vite, React Router, FullCalendar, CSS (mobile-first) |
+| Back end (`/api`) | Node.js, Express, bcrypt, express-session, node-cron, Nodemailer |
+| Database (`/database`) | PostgreSQL with SQL migrations |
+| Testing and quality | Vitest, Jest + Supertest, ESLint, Prettier, GitHub Actions |
 
-Open http://localhost:5000. To try it from a phone on the same Wi-Fi, open `http://<your-computer-ip>:5000`.
+See [`docs/PRD.md`](docs/PRD.md#4-technical-architecture) for the full architecture, data model, and planned API endpoints.
 
-The database is created automatically at `instance/studentsync.sqlite`. Delete that file to start over.
+## How future development will be organized
 
-For anything beyond local development, set a real secret key:
+Development will happen in **phases**, each delivered in a later prototype. Each phase leaves the app working, with more features than the phase before:
 
-```bash
-export SECRET_KEY="some-long-random-string"
-```
+| Phase | Focus | User stories |
+|---|---|---|
+| 0 | Scaffolding and documentation (**Prototype 1**) | — |
+| 1 | Project setup and accounts (register, log in, log out) | US-03 |
+| 2 | Add, edit, and delete assignments, tasks, and events with dates and times | US-01, US-02 |
+| 3 | Course colors, importance ratings, To-Do list, completing work | US-04, US-05, US-08, US-09 |
+| 4 | Weekly and monthly calendar views and conflict detection | US-06, US-07 |
+| 5 | Deadline and follow-up reminders | US-10, US-11 |
+| 6 | Mobile and accessibility polish, demo data, deployment | — |
 
-## Running tests
+Workflow summary (details in [`docs/WORKSPACE_RULES.md`](docs/WORKSPACE_RULES.md)):
 
-```bash
-pytest
-```
+1. Each task in [`docs/TASKS.md`](docs/TASKS.md) becomes a GitHub issue.
+2. Work happens on a short-lived branch, for example `feature/T-2.2-item-crud-api`.
+3. Commits follow Conventional Commits, for example `feat(api): add item CRUD endpoints`.
+4. Changes are merged into `main` through a pull request after at least one teammate approves it. This also applies to PRs opened by Devin.
+5. A task is done only when all of its acceptance criteria are met.
+
+## Out of scope
+
+Canvas/LMS importing, assignment submission, grade calculation, instructor or employer accounts, shared calendars, messaging, payments, external appointment booking, automatic study scheduling, and automatic conflict resolution are **not** part of StudentSync. See [`docs/PRD.md`](docs/PRD.md#34-out-of-scope).
